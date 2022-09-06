@@ -60,7 +60,7 @@ public class Main {
                     }
                     break;
 	case 4:
-	    list.stream().forEach((result)->System.out.println(result));
+	    list.stream().forEach((result)->System.out.println(getTitle(result)));
 	     break;  
                case 5:
                     isExit = true;
@@ -86,7 +86,7 @@ public class Main {
         try {
             u = new URL(String.format("https://google.com/search?q=%s", keyword));
             URLConnection conn = u.openConnection();
-            conn.setRequestProperty("User-agent","Mozilla/5.0");  
+            conn.setRequestProperty("User-agent","Mozilla/5.0"); 
             br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String s = null ;
             while ((s = br.readLine()) != null) {
@@ -139,5 +139,27 @@ public class Main {
     }
     static List<String> search(String keyword) {
         return googleSearch(keyword);
+    }
+    static String getTitle(String url) {
+        URL u = null;
+        BufferedReader br = null;
+        String str = null;
+        try {
+	u = new URL(url);
+	URLConnection conn = u.openConnection();
+              conn.setRequestProperty("User-agent","Mozilla/5.0"); 
+	br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+              String s = null ;
+              while ((s = br.readLine())!=null) {
+                  if (s.contains("<title>")) {
+	        s.replace("<title>","");
+	        str = str.replace("</title>", "");
+	        str = str.trim();
+	       break;
+	   }
+              } 
+        } catch (IOException e) {
+	System.err.println("エラー:"+e.getMessage());
+        }finally{return str;}
     }
 }
